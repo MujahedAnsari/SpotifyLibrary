@@ -2,7 +2,7 @@
 //  AddPlaylistViewController.swift
 //  SpotifyLibrary
 //
-//  Created by Mujahed Ansari on 07/12/24.
+//  Created by Mujahed Ansari on 08/12/24.
 //
 
 protocol AddPlaylistDelegate:  AnyObject {
@@ -93,18 +93,18 @@ class AddPlaylistViewController: UIViewController {
     // MARK: - Button Action
     @objc private func confirmButtonTapped() {
         guard let playlistName = textField.text, !playlistName.isEmpty else {
-            showAlert(message: "Please enter a name for your playlist.")
+            showAlert(message: Constants.nameErrorMessage)
             return
         }
         let newPlaylist = Playlist(title: playlistName, songCount: 0, songs: [])
-        print("Playlist Name: \(playlistName)")
+        print("\(Constants.playlistName) \(playlistName)")
         self.delegate?.addPlaylist(newPlaylist)
         self.dismiss(animated: true)
     }
 
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(title: Constants.error, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Constants.ok, style: .default))
         present(alert, animated: true)
     }
 }

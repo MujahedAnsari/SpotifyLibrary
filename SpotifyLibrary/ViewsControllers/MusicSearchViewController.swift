@@ -2,14 +2,14 @@
 //  MusicSearchViewController.swift
 //  SpotifyLibrary
 //
-//  Created by Mujahed Ansari on 07/12/24.
+//  Created by Mujahed Ansari on 08/12/24.
 //
 
 import UIKit
 
 class MusicSearchViewController: BaseViewController {
     private let searchController = UISearchController(searchResultsController: nil)
-    private var results: [String] = []
+    private var results: [Track] = []
 
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -18,16 +18,18 @@ class MusicSearchViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Search Music"
+        title = Constants.searchMusic
         
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Songs, Artists..."
+        searchController.searchBar.placeholder = Constants.searchArtists
         searchController.searchBar.searchTextField.textColor = .white
+        searchController.searchBar.delegate = self
+        
         navigationItem.searchController = searchController
         definesPresentationContext = true
 
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.cellReusableIdentifiers.cell)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
@@ -38,21 +40,19 @@ class MusicSearchViewController: BaseViewController {
 
     private func fetchMusic(query: String) {
         guard !query.isEmpty else { return }
-        let urlString = "https://itunes.apple.com/search?term=\(query)&entity=song"
+        let urlString = "\(Constants.apiUrl.iTunesUrl)/search?term=\(query)&entity=song"
         guard let url = URL(string: urlString) else { return }
 
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
             guard let self = self, let data = data, error == nil else { return }
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any],
-                   let results = json["results"] as? [[String: Any]] {
-                    self.results = results.compactMap { $0["trackName"] as? String }
+                let trackResult = try JSONDecoder().decode(TrackResult.self, from: data)
+                  self.results = trackResult.results
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
-                }
             } catch {
-                print("Failed to decode JSON: \(error)")
+                print("\(Constants.failedToDecodeJSON) \(error)")
             }
         }.resume()
     }
@@ -71,8 +71,24 @@ extension MusicSearchViewController: UITableViewDelegate, UITableViewDataSource 
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = results[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReusableIdentifiers.cell, for: indexPath)
+        cell.backgroundColor = .clear
+        cell.textLabel?.text = results[indexPath.row].collectionName
+        cell.textLabel?.textColor = .white
         return cell
+    }
+}
+
+extension MusicSearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        results = []
+        tableView.reloadData()
+        self.tabBarController?.selectedIndex = 2
+        
     }
 }

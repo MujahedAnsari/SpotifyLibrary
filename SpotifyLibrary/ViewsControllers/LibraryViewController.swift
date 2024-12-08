@@ -2,7 +2,7 @@
 //  LibraryViewController.swift
 //  SpotifyLibrary
 //
-//  Created by Mujahed Ansari on 07/12/24.
+//  Created by Mujahed Ansari on 08/12/24.
 //
 
 import UIKit
@@ -27,7 +27,7 @@ class LibraryViewController: BaseViewController {
 
     private let switchButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "switchImage"), for: .normal)
+        button.setImage(UIImage(named: Constants.imageName.switchImage), for: .normal)
         return button
     }()
     
@@ -39,7 +39,7 @@ class LibraryViewController: BaseViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Your Library"
+        label.text = Constants.yourLibrary
         label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textColor = .white
         return label
@@ -47,7 +47,7 @@ class LibraryViewController: BaseViewController {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "profileView")
+        imageView.image = UIImage(named: Constants.imageName.profileView)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.masksToBounds = true
@@ -63,7 +63,7 @@ class LibraryViewController: BaseViewController {
     
     private let playListLbl: UILabel = {
         let label = UILabel()
-        label.text = "Playlists"
+        label.text = Constants.playlists
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textColor = .white
         label.layer.borderColor = UIColor.white.cgColor
@@ -87,7 +87,7 @@ class LibraryViewController: BaseViewController {
     }
 
     private func setupUI() {
-        let addButton = UIBarButtonItem(image: UIImage(named: "plus"), style: .plain, target: self, action: #selector(didTapAdd))
+        let addButton = UIBarButtonItem(image: UIImage(named: Constants.imageName.plus), style: .plain, target: self, action: #selector(didTapAdd))
         addButton.tintColor = .white
         navigationItem.setRightBarButton(addButton, animated: true)
         
@@ -115,9 +115,9 @@ class LibraryViewController: BaseViewController {
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(PlaylistCell.self, forCellWithReuseIdentifier: "PlaylistCell")
+        collectionView.register(PlaylistCell.self, forCellWithReuseIdentifier: Constants.cellReusableIdentifiers.playlistCell)
         
-        tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: "PlaylistTableViewCell")
+        tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: Constants.cellReusableIdentifiers.playlistTableViewCell)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .clear
@@ -179,6 +179,12 @@ class LibraryViewController: BaseViewController {
         collectionView.isHidden = !isGridView
         tableView.isHidden = isGridView
     }
+    
+    private func navigateToplaylist() {
+        let playList = PlaylistViewController()
+        let navigationController = UINavigationController(rootViewController: playList)
+        self.present(navigationController, animated: true)
+    }
 } //end class body.
 
 extension LibraryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -187,10 +193,14 @@ extension LibraryViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistCell", for: indexPath) as! PlaylistCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellReusableIdentifiers.playlistCell, for: indexPath) as! PlaylistCell
         let playlist = playlists[indexPath.item]
         cell.configure(with: playlist)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        navigateToplaylist()
     }
 }//end extension body.
 
@@ -200,10 +210,14 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: PlaylistTableViewCell = tableView.dequeueReusableCell(withIdentifier: "PlaylistTableViewCell", for: indexPath) as! PlaylistTableViewCell
+        let cell: PlaylistTableViewCell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReusableIdentifiers.playlistTableViewCell, for: indexPath) as! PlaylistTableViewCell
         let playlist = playlists[indexPath.item]
         cell.configure(with: playlist)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        navigateToplaylist()
     }
 }//end extension body
 

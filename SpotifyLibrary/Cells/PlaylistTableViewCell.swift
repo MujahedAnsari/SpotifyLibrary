@@ -36,7 +36,7 @@ class PlaylistTableViewCell: UITableViewCell {
         contentView.addSubview(artistLabel)
         
         // Options Button
-        optionsButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        optionsButton.setImage(UIImage(systemName: Constants.ellipsis), for: .normal)
         optionsButton.tintColor = .white
         contentView.addSubview(optionsButton)
         

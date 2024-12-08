@@ -2,14 +2,14 @@
 //  PlaylistManager.swift
 //  SpotifyLibrary
 //
-//  Created by Mujahed Ansari on 07/12/24.
+//  Created by Mujahed Ansari on 08/12/24.
 //
 
 import Foundation
 
 class PlaylistManager {
     static let shared = PlaylistManager()
-    private let storageKey = "playlists"
+    private let storageKey = Constants.storageKey
     
     private init() {}
 

@@ -2,7 +2,7 @@
 //  HomeViewController.swift
 //  SpotifyLibrary
 //
-//  Created by Mujahed Ansari on 07/12/24.
+//  Created by Mujahed Ansari on 08/12/24.
 //
 
 import UIKit
@@ -10,9 +10,7 @@ import UIKit
 class HomeViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-      //  view.backgroundColor = .black
-       // title = ""
-
+      
         let gridView = UIStackView()
         gridView.axis = .vertical
         gridView.spacing = 10
@@ -25,7 +23,7 @@ class HomeViewController: BaseViewController {
             playlistView.heightAnchor.constraint(equalToConstant: 100).isActive = true
 
             let label = UILabel()
-            label.text = "Playlist \(i)"
+            label.text = "\(Constants.playlist) \(i)"
             label.textColor = .white
             label.translatesAutoresizingMaskIntoConstraints = false
 
